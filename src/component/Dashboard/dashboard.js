@@ -1,4 +1,6 @@
+import axios from 'axios'
 import React, { Component } from 'react';
+
 import {
     Collapse,
     Navbar,
@@ -17,13 +19,9 @@ import {
     CarouselItem,
     CarouselControl,
     CarouselIndicators,
-    CarouselCaption
-  
-  } from 'reactstrap';
+    CarouselCaption,Table,Modal, ModalHeader, ModalBody, ModalFooter
+   } from 'reactstrap';
 
-  import imagen from '../imagenes/google.jpg'
-  import fotos from '../imagenes/fotos.jpg'
-  import foto1 from '../imagenes/foto2.jpg'
 
 class Dashboard extends Component{
 
@@ -31,19 +29,68 @@ constructor(props){
     super(props)
     this.state = {
         activeIndex:0,
-        animating:false
+        animating:false,
+        elNombre:'',
+        elapellidoP:'',
+        elapellidoM:'',
+        arrayEmpleados:[],
+        arrayClientes:[],
+        arrayProductos:[],
+        arrayTrabajo:[],
+        modal:false,
+
     }
     this.regresar = this.regresar.bind(this)
-}    
+    this.toggle = this.toggle.bind(this)
+} 
 
+toggle(parametro){
+  this.setState({modal:parametro})
+}
 
+componentWillMount(){
+  const nomb = localStorage.getItem("nombre") 
+  const apellidoP = localStorage.getItem("apellidos")
+  const apellidoM = localStorage.getItem("ape")
 
+  const API='http://localhost:4000/graphql'   
+      const id =  localStorage.getItem("id")
+      
+    
+    
+       axios({
+          url:API,
+          method:'post',
+          data:{
+              query:`
+              query{   
+                getAdmins(data:"${[id]}"){
+                  id
+                  
+                   } 
+              }
+              `
+          }   
+           })
+         .then(datos => {
+              this.setState({arrayEmpleados:datos.data.data.getEmpleados})
+              console.log("que hay en administrador" , datos)
+          })
+          .catch(err=>{
+             console.log('error del dashboard' ,err.response)
+          })
+    
+  
+      this.setState({elNombre:nomb})
+      this.setState({elapellidoP:apellidoP})
+      this.setState({elapellidoM:apellidoM})
+
+       
+    }
 
  regresar(){
-    this.props.history.push("/form")
+    this.props.history.push("/")
  }   
-
- 
 
  render(){
      const items = [
@@ -91,43 +138,143 @@ constructor(props){
         );
       });
 
-    
+    const nom = this.state.elNombre
+    const apeP = this.state.elapellidoP
+    const apeM = this.state.elapellidoM
 
+ /// console.log("algo",this.state.elNombre,this.state.elapellidoP,this.state.elapellidoM)
+let modal;
+if(this.state.arrayEmpleados){
+console.log("arrayempledo" , this.state.arrayEmpleados)  
+modal = <div>
+  
+
+<Modal size="lg" isOpen={this.state.modal} toggle={this.toggle} style={{width:2000, height:1000}}>
+    <ModalHeader toggle={e=>this.toggle(false)} >Empleados </ModalHeader>
+    
+    <ModalBody>
+
+    <Table small responsive>
+<thead>
+ <tr>
+<td >id</td>
+<td >Nombre</td>
+<td >Apellido P</td>
+<td >apellido M</td>
+<td >Telefono</td>
+<td >Direccion</td>
+<td >CP</td>
+</tr>
+</thead>
+{this.state.arrayEmpleados.map(rows=>{
+return(
+
+<tbody>
+<tr>
+<th scope="row" ></th>
+<td  key={rows.id}>{rows.id}</td>
+<td >{rows.nombreEmpleado}</td>
+<td width="5%">{rows.apellidoPempleado}</td>
+<td width="5%">{rows.apellidoMempleado}</td>
+<td width="5%">{rows.direccionE}</td>
+<td width="5%">{rows.telefonoE}</td>
+<td width="5%">{rows.cp}</td>
+</tr>
+</tbody>
+)
+})}
+</Table>
+</ModalBody>
+    <ModalFooter>
+    <Button color="secondary" onClick={e=>this.toggle(false)}>Cancel</Button> 
+    </ModalFooter>
+</Modal>
+</div>   
+}
+
+// let modal;
+// if(this.state.arrayEmpleados){
+// console.log("arrayempledo" , this.state.arrayEmpleados)  
+// modal = <div>
+// <Modal size="lg" isOpen={this.state.modal} toggle={this.toggle} style={{width:2000, height:1000}}>
+//     <ModalHeader toggle={e=>this.toggle(false)} >Empleados </ModalHeader>
+    
+//     <ModalBody>
+
+//     <Table small responsive>
+// <thead>
+//  <tr>
+// <td >id</td>
+// <td >Nombre</td>
+// <td >Apellido P</td>
+// <td >apellido M</td>
+// <td >Telefono</td>
+// <td >Direccion</td>
+// <td >CP</td>
+// </tr>
+// </thead>
+// {this.state.arrayEmpleados.map(rows=>{
+// return(
+
+// <tbody>
+// <tr>
+// <th scope="row" ></th>
+// <td  key={rows.id}>{rows.id}</td>
+// <td >{rows.nombreEmpleado}</td>
+// <td width="5%">{rows.apellidoPempleado}</td>
+// <td width="5%">{rows.apellidoMempleado}</td>
+// <td width="5%">{rows.direccionE}</td>
+// <td width="5%">{rows.telefonoE}</td>
+// <td width="5%">{rows.cp}</td>
+// </tr>
+// </tbody>
+// )
+// })}
+// </Table>
+// </ModalBody>
+//     <ModalFooter>
+//     <Button color="secondary" onClick={e=>this.toggle(false)}>Cancel</Button> 
+//     </ModalFooter>
+// </Modal>
+// </div>   
+// }
 
 return(
     <React.Fragment>
    
-   <Navbar color="warning" light expand="md">
-       
-<NavbarBrand href="https://www.google.com.mx/"  target="_blank"><strong>Bienvenido{localStorage.getItem("nombre") , localStorage.getItem("apellidos") } correo:{localStorage.getItem("correo")}</strong></NavbarBrand>
+   <Navbar style={{backgroundColor: '#ffccff'}} light expand="md">
+   
+<NavbarBrand  > <strong>Bienvenido &nbsp;&nbsp;</strong> {nom}&nbsp;&nbsp;{apeP}&nbsp;&nbsp;{apeM}&nbsp;</NavbarBrand>
           <Collapse navbar>
             <Nav className="mr-auto" navbar>
-         
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                  Departamentos
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem href="https://consumer.huawei.com/mx/phones/" target="_blank">
-                    celulares
-                  </DropdownItem>
-                  <DropdownItem>
-                    Zapateria
-                  </DropdownItem>
-                  {/* <DropdownItem divider /> */}
-                  <DropdownItem >
-                    electronica
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
 
-              <UncontrolledDropdown nav inNavbar>
+            <NavItem>
+                 <NavLink href="/Cliente">Cliente</NavLink>
+               </NavItem>
+
+
+               <NavItem>
+                 <NavLink href="/Empleado">Empleados</NavLink>
+               </NavItem>
+
+
+               <NavItem>
+                 <NavLink href="/Producto">Productos</NavLink>
+               </NavItem>
+
+
+               <NavItem>
+                 <NavLink href="/Empresa">Empresa</NavLink>
+               </NavItem>
+
+              <UncontrolledDropdown nav inNavbar style={{marginLeft:600}}>
                 <DropdownToggle nav caret>
-                  ofertas
+                  menú
                 </DropdownToggle>
                 <DropdownMenu right>
-                  <DropdownItem>
-                    Option 1
+                  <DropdownItem  color="danger" onClick={this.regresar}>
+                    
+                    cerrar sesión
                   </DropdownItem>
                   <DropdownItem>
                     Option 2
@@ -138,64 +285,13 @@ return(
                   </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
+             
 
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                  servicios
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem>
-                    Option 1
-                  </DropdownItem>
-                  <DropdownItem>
-                    Option 2
-                  </DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem>
-                    Reset
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-              <UncontrolledDropdown nav inNavbar>
-               
-                <DropdownToggle nav caret>
-                  Clientes
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem>
-                    Option 1
-                  </DropdownItem>
-                  <DropdownItem>
-                    Option 2
-                  </DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem>
-                    Reset
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                  Options
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem>
-                    Option 1
-                  </DropdownItem>
-                  <DropdownItem>
-                    Option 2
-                  </DropdownItem>
-                  <DropdownItem divider />
-                  </DropdownMenu>
-              </UncontrolledDropdown>
-
-
+              
               <NavItem>
-                <NavLink href="/components/">Components</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="https://github.com/reactstrap/reactstrap"></NavLink>
-                <Button color="danger"style={{marginLeft:300}} onClick={this.regresar} >Cerrar Sesión</Button>
+                {/* <NavLink href="https://github.com/reactstrap/reactstrap">
+                                 </NavLink> */}
+                {/* <Button color="danger"style={{marginLeft:300}} onClick={this.regresar} >Cerrar Sesión</Button> */}
 
               </NavItem>
 
@@ -204,9 +300,127 @@ return(
             
           </Collapse>
         </Navbar>
+        <Button color="danger" onClick={this.toggle}>click aqui</Button>
+        {modal}
+                 
 
+{/* 
+        
+        <Table  bordered size="sm">
+         
+             <th scope="row" ></th>
+             <td width="5%">id</td>
+              <td width="5%">Nombre</td>
+              <td width="5%">Apellido P</td>
+              <td width="5%">apellido M</td>
+              <td width="5%">Telefono</td>
+              <td width="5%">Direccion</td>
+              <td width="5%">CP</td>
+
+           
+        {this.state.arrayEmpleados.map(rows=>{
+        return(
+          
+          <tbody>
+            <tr>
+             <th scope="row" ></th>
+              <td  key={rows.id}>{rows.id}</td>
+              <td >{rows.nombreEmpleado}</td>
+              <td width="5%">{rows.apellidoPempleado}</td>
+              <td width="5%">{rows.apellidoMempleado}</td>
+              <td width="5%">{rows.direccionE}</td>
+              <td width="5%">{rows.telefonoE}</td>
+              <td width="5%">{rows.cp}</td>
+
+            </tr>
+            
+          </tbody>
+        
+
+   
+        )
+        })}
+        </Table> */}
+      
+{/*         
+<Table >
+          <tbody>
+            <tr>
+             <th scope="row" ></th>
+             <td width="12%">id</td>
+              <td width="14%">Nombre</td>
+              <td width="14%">Apellido P</td>
+              <td width="14%">apellido M</td>
+              <td width="12%">C.P.</td>
+              <td width="14%">Telefono</td>
+              <td width="18%">Correo</td>
+
+            </tr>
+            
+          </tbody>
+        </Table>       <h3>clientes </h3>   
+        <Table bordered size="sm">
+       
+        {this.state.arrayClientes.map(rows=>{
+          console.log("que es row",rows)
+        return(
+          <tbody>
+            <tr> 
+             <th scope="row" ></th>
+              <td width="12%" key={rows.id}>{rows.id}</td>
+              <td width="14%">{rows.nombre_cliente}</td>
+              <td width="14%">{rows.apellidoP_cliente}</td>
+              <td width="14%">{rows.apellidoM_cliente}</td>
+              <td width="12%">{rows.cp_cliente}</td>
+              <td width="14%">{rows.telefono_cliente}</td>
+              <td width="18%">{rows.correo_cliente}</td>
+              
+
+            </tr>
+            
+          </tbody>
+     
+     )
+    })}
+  </Table> */}
+
+ <Table>
+          <tbody>
+            <tr>
+            <td >id</td>
+              <td >razon_social</td>
+              <td > direccion</td>
+              <td >telefonoEmpresa</td>
+              <td >correoEmpresas</td>
+                 
+
+            </tr>
+            
+          </tbody>
+        </Table> 
+        <Table bordered size="sm">                
+        {this.state.arrayTrabajo.map(rows=>{
+        return(
+     
+          <tbody>
+            <tr>
+            <td width="12%" key={rows.id}>{rows.id}</td>
+              <td width="14%">{rows.razon_social}</td>
+              <td width="14%">{rows.direccion}</td>
+              <td width="14%">{rows.telefonoEmpresa}</td>
+              <td width="12%">{rows.correoEmpresas}</td>
+ 
+            </tr>
+            
+          </tbody>
+
+
+
+)
+})} 
+              </Table> 
     
-
+{/* 
 
 
     <Carousel
@@ -218,7 +432,7 @@ return(
       {slides}
       <CarouselControl direction="prev" directionText="Previous" onClickHandler={previous} />
       <CarouselControl direction="next" directionText="Next" onClickHandler={next} />
-    </Carousel>
+    </Carousel> */}
 
 
 </React.Fragment>
