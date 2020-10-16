@@ -1,11 +1,14 @@
 import axios from 'axios'
 import React,{Component} from 'react'
-import imagen from '../imagenes/uno.png'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Navbar,Form,Button,MDBContainer, MDBRow, MDBCol, MDBBtn, MDBIcon, MDBInput } from 'mdbreact';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bootstrap-css-only/css/bootstrap.min.css';
+import 'mdbreact/dist/css/mdb.css';
 
 
-import {
-    Card, Col,Navbar,
-     Button, Form, FormGroup, Label,CardImg, Input,} from 'reactstrap';
+import { Paper } from '@material-ui/core';
+
 
 class Signup extends Component{
     constructor(props){
@@ -22,10 +25,7 @@ class Signup extends Component{
 
         }
       
-    }
-
-    
-   
+    }   
 
 
     onChangeInput =(e)=>{
@@ -77,62 +77,106 @@ class Signup extends Component{
         return(
 <React.Fragment>
 {/* <Card style={{ backgroundColor: '#568', borderColor: '#433',width:800 ,height:800,border:2,display:"center", justifyContent:"center"}}> */}
-<Navbar  style={{backgroundColor: '#ffccff'}} light expand="md">ADMINISTRADOR</Navbar>
- 
+<Navbar  style={{backgroundColor: '#33b5e5'}} light expand="md">Signup</Navbar>
 
-<Card style={{width:500, height:800, display:"center", justifyContent:"center",marginLeft:300,marginTop:30,marginBottom:100}} >
- 
-<CardImg src={imagen} style={{ width:300, marginLeft:400, marginLeft:100}} width="10%"  alt="imagen" />
-             
+<Paper style={{width:500, height:1000, display:"center", justifyContent:"center",marginLeft:300,marginTop:30,marginBottom:100}} >
+<MDBContainer style={{marginLeft:30}}>
+<MDBRow>
+    <MDBCol md="10">
+            
         <Form onSubmit={this.onSubmitBtn}  >
-       
-          <FormGroup row >
-       
-        <Col sm={9} style={{marginLeft:70}}>
-         <Input type="text" name="user" id="nombre" placeholder="NOMBRE (S)" onChange={this.onChangeInput} value={this.state.user}  />
-        </Col>
-        <br></br>
-        <br></br>
-       
-        <Col sm={9} style={{marginLeft:70}}>
-        <Input type="text" name="apellidop" id="apellidoP" placeholder="APELLIDO PATERNO" onChange={this.onChangeInput} value={this.state.user}  />
-        </Col>
-        <br></br>
-        <br></br>
-       
-        <Col sm={9} style={{marginLeft:70}}>
-        <Input type="text" name="apellidoM" id="apellidoM" placeholder="APELLIDO MATERNO" onChange={this.onChangeInput} value={this.state.user}  />
-        </Col>
-        <br></br>
-        <br></br>
-       
-        <Col sm={9} style={{marginLeft:70}}>
-        <Input type="text" name="direccion" id="direccion" placeholder="DIRECCIÓN" onChange={this.onChangeInput} value={this.state.user}  />
-        </Col>
-        <br></br>
-        <br></br>
-       
-        <Col sm={9} style={{marginLeft:70}}>
-        <Input type="text" name="telefono" id="telefono" placeholder="TELEFONO" onChange={this.onChangeInput} value={this.state.user}  />
-        </Col>
-        <br></br>
-        <br></br>
-        <Col sm={9} style={{marginLeft:70}}>
-        <Input type="text" name="correo" id="correo" placeholder="CORREO" onChange={this.onChangeInput} value={this.state.user}  />
-        </Col>
-        <br></br>
-        <br></br>
-        <Col sm={9} style={{marginLeft:70}}>
-        <Input type="contrasena" name="contrasena" id="contrasena" placeholder="PASSWORD"  onChange={this.onChangeInput} value={this.state.pass} />
-        </Col>
-        <br/><br/>
-        <br></br>
+            &nbsp;
+            &nbsp;
+            <p className="h5 text-center mb-4">Registrar Usuario</p>
+            <div>
+        <MDBInput   label ="Nombre (s):" 
+                    icon="key"
+                    validate error="wrong" 
+                    type="text" 
+                    name="nombre" 
+                    id="nombre" 
+                    onChange={this.onChangeInput} 
+                    value={this.state.pass}
+                    success="right"
+                     required />
+
+        <MDBInput   label ="Apellido Paterno:" 
+                    icon="key"
+                    validate error="wrong" 
+                    type="text" 
+                    name="apellidop" 
+                    id="apellidoP"
+                    onChange={this.onChangeInput} 
+                    value={this.state.pass}
+                    success="right"
+                     required /> 
+
+<MDBInput   label ="Apellido Materno:" 
+                    icon="key"
+                    validate error="wrong" 
+                    type="text" 
+                    name="apellidoM" 
+                    id="apellidoM"
+                    onChange={this.onChangeInput} 
+                    value={this.state.pass}
+                    success="right"
+                     required /> 
+
+<MDBInput   label ="Dirección:" 
+                    icon="key"
+                    validate error="wrong" 
+                    type="text" 
+                    name="direccion"
+                    id="direccion"
+                    onChange={this.onChangeInput} 
+                    value={this.state.pass}
+                    success="right"
+                     required /> 
+
+<MDBInput   label ="Telefono:" 
+                    icon="key"
+                    validate error="wrong" 
+                    type="number" 
+                    name="telefono"
+                    id="telefono"                    
+                    onChange={this.onChangeInput} 
+                    value={this.state.pass}
+                    success="right"
+                     required /> 
+
+<MDBInput   label="Correo:" 
+                    icon="key"
+                    validate error="wrong" 
+                    type="email" 
+                    name="correo" 
+                    id="correo"
+                    onChange={this.onChangeInput} 
+                    value={this.state.pass}
+                    success="right"
+                     required /> 
+
+<MDBInput   label="Contraseña:" 
+                    icon="key"
+                    validate error="wrong" 
+                    type="password" 
+                    name="contrasena" 
+                    id="contrasena"
+                    onChange={this.onChangeInput} 
+                    value={this.state.pass}
+                    success="right"
+                     required /> 
+   
+</div>
 <Button color="success" type="submit" style={{marginLeft:70, marginLeft:200}} >guardar</Button>
 
-      </FormGroup >
-     
+
+
+
     </Form>
-      </Card>
+    </MDBCol>
+    </MDBRow>
+      </MDBContainer>
+      </Paper>
 
 </React.Fragment>
      

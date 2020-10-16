@@ -112,9 +112,7 @@ class Login extends Component{
         <Row style={{padding:15}}>
         ¿No tienes una cuenta? &nbsp; &nbsp; &nbsp; <a href="/signup">Registrate</a>
         </Row>
-        <Row style={{padding:15}}>
-        <br></br> <a href="/tablas">Consultar</a>
-        </Row>
+        
       </FormGroup>
      
         </Form>
